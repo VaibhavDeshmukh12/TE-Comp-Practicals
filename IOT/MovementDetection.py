@@ -12,7 +12,7 @@ vs = VideoStream(src=0).start()
 
 def getImg():
     im = vs.read()
-    im = cv2.COLOR(im,cv2.COLOR_BGR2GRAY)
+    im = cv2.cvtCOLOR(im,cv2.COLOR_BGR2GRAY)
     im = cv2.blur(im,(20,20))
     return im
 oldimg = getImg()
