@@ -1,0 +1,169 @@
+SQL Queries
+Account(Acc_no, branch_name,balance)
+branch(branch_name,branch_city,assets)
+customer(cust_name,cust_street,cust_city)
+Depositor(cust_name,acc_no)
+Loan(loan_no,branch_name,amount)
+Borrower(cust_name,loan_no)
+Solve following query:
+Create above tables with appropriate constraints like primary key, foreign key, check constraints, not
+null etc.
+1) Find the names of all branches in loan relation.
+2) Find all loan numbers for loans made at &#39;Shivaji Nagar&#39; Branch with loan amount &gt; 12000.
+3) Find all customers who have a loan from bank. Find their names,loan_no and loan amount.
+4) List all customers in alphabetical order who have loan from Akurdi branch.
+5) Find all customers who have an account or loan or both at bank.
+6) Find all customers who have both account and loan at bank.
+7) Find all customers who have account but no loan at the bank.
+8) Find average account balance at Akurdi branch.
+9) Find the branches where average account balance &gt; 15000.
+10) Find number of tuples in customer relation.
+11) Calculate total loan amount given by bank.
+12) Delete all loans with loan amount between 1300 and 1500.
+--------------------------------------------------------------------------------------------------
+
+CREATE TABLE BRANCH
+(
+	BRANCH_NAME VARCHAR2(20) PRIMARY KEY,
+	BRANCH_CITY VARCHAR2(12),
+	ASSETS FLOAT NOT NULL
+);
+
+CREATE TABLE ACCOUNT
+(
+	ACC_NO NUMBER(10) PRIMARY KEY,
+	BRANCH_NAME VARCHAR2(20) NOT NULL,
+	BALANCE FLOAT NOT NULL,
+	FOREIGN KEY(BRANCH_NAME) REFERENCES BRANCH(BRANCH_NAME),
+	CONSTRAINT CHK CHECK (BALANCE >= 1000)
+);
+
+CREATE TABLE CUSTOMER
+(
+	CUST_NAME VARCHAR2(20) PRIMARY KEY,
+	CUST_STREET VARCHAR2(15),
+	CUST_CITY VARCHAR2(10) NOT NULL
+);
+
+CREATE TABLE DEPOSITOR
+(
+	CUST_NAME VARCHAR2(20),
+	ACC_NO NUMBER(10),
+	FOREIGN KEY(CUST_NAME) REFERENCES CUSTOMER(CUST_NAME),
+	FOREIGN KEY(ACC_NO) REFERENCES ACCOUNT(ACC_NO)
+);
+
+CREATE TABLE LOAN
+(
+	LOAN_NO NUMBER(5) PRIMARY KEY,
+	BRANCH_NAME VARCHAR2(20),
+	AMOUNT FLOAT NOT NULL,
+	FOREIGN KEY(BRANCH_NAME) REFERENCES BRANCH(BRANCH_NAME)
+);
+
+CREATE TABLE BORROWER
+(
+	CUST_NAME VARCHAR2(20),
+	LOAN_NO NUMBER(5),
+	FOREIGN KEY(CUST_NAME) REFERENCES CUSTOMER(CUST_NAME),
+	FOREIGN KEY(LOAN_NO) REFERENCES LOAN(LOAN_NO)
+);
+
+
+insert into customer values ('Vaibhav', 'Main', 'Pune');
+insert into customer values ('Nayan', 'Main', 'Amaravati');
+insert into customer values ('Om', 'Main', 'Beed');
+insert into customer values ('Pranay', 'North', 'Bhandara');
+insert into customer values ('Anjali','Park', 'Solapur');
+insert into customer values ('Netra', 'Putnam', 'Pune');
+insert into customer values ('Shardul', 'Nassau', 'Nagar');
+insert into customer values ('Devesh', 'Spring', 'Pune');
+insert into customer values ('Raj', 'ShivajiNagar','Pune');
+insert into customer values ('Glenn', 'Sand Hill', 'Woodside');
+insert into customer values ('Kanhaiya', 'Jadhavwadi', 'Nagar');
+insert into customer values ('Ganesh', 'Mayur Park', 'Vaijapur');
+insert into customer values ('Janhavi', 'University', 'Buldhana');
+insert into customer values ('Shital', 'First', 'Nagar');
+
+
+insert into branch values ('Shivaji Nagar', 'Pune', 1900000);
+insert into branch values ('Nagar', 'Nagar', 1000000);
+insert into branch values ('Shivaji Nagar', 'Pune', 800000);
+insert into branch values ('Model Colony', 'Pune', 500000);
+insert into branch values ('Pimpri', 'Pune', 1100000);
+insert into branch values ('Fashion Street', 'Pune', 850000);
+insert into branch values ('Akurdi', 'Pune', 320000);
+insert into branch values ('Lonavala', 'Pune', 600000);
+insert into branch values ('Aundh', 'Pune', 700000);
+insert into branch values ('Kunbhmel', 'Pune', 880000);
+
+insert into account values (1,'Shivaji Nagar', 50500);
+insert into account values (2,'Akurdi', 80000);
+insert into account values (3,'Akurdi', 100000);
+insert into account values (4,'Lonavala', 12000);
+insert into account values (5,'Shivaji Nagar', 10000);
+insert into account values (6,'Pimpri', 8000);
+insert into account values (7,'Aundh', 500000);
+insert into account values (8,'Shivaji Nagar', 55000);
+insert into account values (9,'Aundh', 450000);
+insert into account values (10,'Kunbhmel', 35000);
+
+insert into Depositor values ('Vaibhav', 1);
+insert into Depositor values ('Nayan',2);
+insert into Depositor values ('Om', 3);
+insert into Depositor values ('Pranay',4);
+insert into Depositor values ('Anjali',5);
+insert into Depositor values ('Netra', 6);
+insert into Depositor values ('Shardul', 7);
+insert into Depositor values ('Devesh',8);
+insert into Depositor values ('Raj', 9);
+insert into Depositor values ('Glenn', 10);
+
+insert into Loan values (101,'Shivaji Nagar', 10000);
+insert into loan values (102,'Akurdi', 8000);
+insert into loan values (103,'Akurdi', 10000);
+insert into loan values (104,'Lonavala', 1200);
+insert into loan values (105,'Shivaji Nagar', 20000);
+insert into loan values (106,'Pimpri', 9000);
+insert into loan values (107,'Aundh', 40000);
+insert into loan values (108,'Shivaji Nagar', 35000);
+insert into loan values (109,'Aundh', 550000);
+insert into loan values (110,'Kunbhmel', 45000);
+
+insert into borrower values ('Vaibhav', 101);
+insert into borrower values ('Nayan', 102);
+insert into borrower values ('Shardul', 103);
+insert into borrower values ('Anjali', 104);
+insert into borrower values ('Om', 105);
+insert into borrower values ('Pranay', 106);
+insert into borrower values ('Janhavi', 107);
+insert into borrower values ('Kanhaiya', 108);
+insert into borrower values ('Devesh', 109);
+insert into borrower values ('Raj', 110);
+
+
+1. SELECT BRANCH_NAME FROM LOAN;
+
+2. SELECT LOAN_NO FROM LOAN WHERE BRANCH_NAME = 'Shivaji Nagar' AND AMOUNT > 12000;
+
+3. SELECT LOAN.LOAN_NO,LOAN.AMOUNT,BORROWER.CUST_NAME FROM LOAN INNER JOIN BORROWER ON BORROWER.LOAN_NO = LOAN.LOAN_NO;
+
+4. SELECT BORROWER.CUST_NAME FROM BORROWER INNER JOIN LOAN ON BORROWER.LOAN_NO = LOAN.LOAN_NO WHERE BRANCH_NAME = 'Akurdi' ORDER BY CUST_NAME ASC;
+
+5. SELECT CUST_NAME FROM CUSTOMER 
+    UNION
+    SELECT CUST_NAME FROM BORROWER;
+
+6. SELECT CUST_NAME FROM DEPOSITOR WHERE CUST_NAME IN (SELECT CUST_NAME FROM BORROWER);
+
+7. SELECT CUST_NAME FROM DEPOSITOR WHERE CUST_NAME NOT IN(SELECT CUST_NAME FROM BORROWER);
+
+8. SELECT AVG(BALANCE) FROM ACCOUNT WHERE BRANCH_NAME = 'Akurdi'; 
+
+9. SELECT BRANCH_NAME,AVG(BALANCE) FROM ACCOUNT GROUP BY BRANCH_NAME HAVING AVG(BALANCE) > 12000;
+
+10. SELECT COUNT(*) FROM CUSTOMER;
+
+11. SELECT SUM(AMOUNT) "TOTAL AMOUNT" FROM LOAN;
+
+12. DELETE FROM LOAN WHERE AMOUNT BETWEEN 1300 AND 1500;

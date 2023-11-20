@@ -1,0 +1,45 @@
+Procedure
+Write a Stored Procedure namely Proc_Grade for the categorization of student. If marks scored by
+students in examination is &lt;=1500 and marks&gt;=990 then student will be placed in distinction category
+
+if marks scored are between 989 and 900 category is first class, if marks 899 and 825 category is Higher
+Second Class.
+Write a PL/SQL block for using procedure created with above requirement.
+Stud_Marks(Roll, Name, Total_marks)
+Result(Roll, Name, Class)
+----------------------------------------------------
+
+CREATE OR REPLACE PROCEDURE PROC_GRADE(MARKS IN NUMBER,CLASS OUT VARCHAR2)
+IS
+BEGIN
+	IF(MARKS >= 990 AND MARKS <= 1500) THEN
+		CLASS := 'DISTINCTION';
+	ELSIF(MARKS < 990 AND MARKS >= 900) THEN
+		CLASS := 'FIRST CLASS';
+	ELSIF(MARKS >= 825 AND MARKS < 900) THEN
+		CLASS := 'HIGHER SECOND CLASS';
+	ELSE
+		CLASS := 'NA';
+	END IF;
+END;
+/
+
+DECLARE
+	ROLLNO NUMBER(5);
+	MARKS NUMBER(5);
+	CLASS VARCHAR2(25);
+	NAME VARCHAR2(20);
+BEGIN
+	ROLLNO := &ROLLNO;
+	SELECT TOTAL_MARKS,NAME INTO MARKS,NAME FROM STUD_MARKS WHERE ROLL_NO = ROLLNO;
+	PROC_GRADE(MARKS,CLASS);
+	DBMS_OUTPUT.PUT_LINE('MARKS: '||MARKS);
+	DBMS_OUTPUT.PUT_LINE('CLASS: '||CLASS);
+	INSERT INTO RESULT VALUES(ROLLNO,NAME,CLASS);
+EXCEPTION 
+	WHEN NO_DATA_FOUND THEN
+		DBMS_OUTPUT.PUT_LINE('NO DATA FOUND!');
+	WHEN OTHERS THEN
+		DBMS_OUTPUT.PUT_LINE('SOME EXCEPTION OCCURS!');
+END;
+/

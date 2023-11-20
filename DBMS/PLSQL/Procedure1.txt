@@ -1,0 +1,78 @@
+PL/SQL procedure
+1. Borrower(Roll_no, Name, DateofIssue, NameofBook, Status)
+2. Fine(Roll_no,Date,Amt)
+Accept Roll_no and NameofBook from user.
+Write a PL/SQL procedure. The procedure calculates the fine and performs the book returning
+operation
+Assume suitable conditions for calculating fine.
+● Check the number of days (from date of issue).
+● If days are between 15 to 30 then fine amount will be Rs 5per day.
+● If no. of days&gt;30, per day fine will be Rs 50 per day and for days less than 30, Rs. 5 per day.
+● If condition of fine is true, then details will be stored into fine table.
+● Also handles the exception by named exception handler or user define exception handler.
+----------------------------------------------------------------------------------------------
+
+CREATE TABLE BORROWERS
+(
+	ROLL NUMBER(5) PRIMARY KEY,
+	NAME VARCHAR2(20),
+	IDATE DATE,
+	BOOKNAME VARCHAR2(20),
+	STATUS VARCHAR2(5)
+);
+
+CREATE TABLE FINE
+(
+	ROLL NUMBER(5),
+	RDATE DATE,
+	AMT NUMBER(5)
+);
+
+INSERT INTO BORROWERS VALUES(1,'VAIBHAV','20-OCT-2023','DBMS','I');
+INSERT INTO BORROWERS VALUES(2,'NAYAN','10-OCT-2023','RDBMS','I');
+INSERT INTO BORROWERS VALUES(3,'OM','2-OCT-2023','CNS','I');
+INSERT INTO BORROWERS VALUES(4,'SHARDUL','20-SEP-2023','SPOS','I');
+INSERT INTO BORROWERS VALUES(5,'JANHAVI','30-SEP-2023','JAVA','I');
+INSERT INTO BORROWERS VALUES(6,'ANJALI','2-SEP-2023','SQL','I');
+INSERT INTO BORROWERS VALUES(7,'PRANAY','12-OCT-2023','MYSQL','I');
+INSERT INTO BORROWERS VALUES(8,'DEVESH','30-OCT-2023','OOPS','I');
+INSERT INTO BORROWERS VALUES(9,'VAIBHAV','1-NOV-2023','DEVOPS','I');
+INSERT INTO BORROWERS VALUES(10,'NAINA','3-NOV-2023','TOC','I');
+
+DECLARE
+	ROLLNO BORROWERS.ROLL%TYPE;
+	BNAME BORROWERS.BOOKNAME%TYPE;
+	IDATE DATE;
+	CDATE DATE;
+	STATUS BORROWERS.STATUS%TYPE;
+	TEMP INT;
+	NDAYS INT;
+	FINE INT;
+BEGIN
+	ROLLNO := &ROLLNO;
+	BNAME := &BNAME;
+	CDATE := SYSDATE();
+	SELECT IDATE,STATUS INTO IDATE,STATUS FROM BORROWERS WHERE ROLL = ROLLNO AND BOOKNAME=BNAME;
+	NDAYS := CDATE - IDATE;
+	FINE := 0;
+	TEMP := NDAYS - 15;
+	IF(STATUS = 'I') THEN
+		IF(NDAYS > 15 AND NDAYS <= 30) THEN
+			FINE := TEMP * 5;
+		ELSIF(TEMP > 15) THEN
+			FINE := 75 + ((TEMP - 15) * 50);
+		END IF;
+		DBMS_OUTPUT.PUT_LINE('TOTAL FINE: '||FINE);
+		DBMS_OUTPUT.PUT_LINE('TOTAL DAYS: '||NDAYS);
+		INSERT INTO FINE VALUES(ROLLNO,CDATE,FINE);
+		UPDATE BORROWERS SET STATUS = 'R' WHERE ROLL = ROLLNO;
+	ELSE
+		DBMS_OUTPUT.PUT_LINE('BOOK IS ALREADY RETURNED!');
+	END IF;
+EXCEPTION 
+	WHEN NO_DATA_FOUND THEN
+		DBMS_OUTPUT.PUT_LINE('NO DATA FOUND!!');	
+	WHEN OTHERS THEN
+		DBMS_OUTPUT.PUT_LINE('SOME EXCEPTION OCCURS!!');
+END;
+/

@@ -1,0 +1,27 @@
+Trigger
+Consider CUSTOMER (ID, Name, Age, Address, Salary) create a row level trigger for the CUSTOMERS
+table that would fire for INSERT or UPDATE or DELETE operations performed on the CUSTOMERS
+table. This trigger will display the salary difference between the old values and new values.
+-----------------------------------------------------------------------------------------------
+
+
+CREATE TABLE CUST  
+(
+	ID NUMBER(5) PRIMARY KEY,
+	NAME VARCHAR2(20),
+	AGE NUMBER(5),
+	ADDRESS VARCHAR2(20),
+	SALARY FLOAT
+);
+
+
+CREATE OR REPLACE TRIGGER TRIG
+AFTER DELETE OR INSERT OR UPDATE
+ON CUST
+FOR EACH ROW
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('NEW SALARY: '||:NEW.SALARY);
+	DBMS_OUTPUT.PUT_LINE('OLD SALARY: '||:NEW.SALARY);
+	DBMS_OUTPUT.PUT_LINE('SALARY DIFF: '||(:NEW.SALARY - :OLD.SALARY));
+END;
+/
